@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Company;
+use App\Models\Companie;
+use App\Rules\PhoneNumber;
 use Illuminate\Http\Request;
 
 class CompaniesController extends Controller
@@ -10,61 +11,90 @@ class CompaniesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function index()
     {
-      /*
-        $companies=Company::all();
 
-        return view('companies.index',[
-           'companies'=> $companies
-        ]);
-        */
+        $companies=Companie::orderByDesc('created_at')->paginate(10);
+
+            return view('companies.index',[
+               'companies'=> $companies
+            ]);
+
     }
 
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function create()
     {
-        //
+        return view('compan\ies.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+         'name'=> 'bail|required|min:5',
+         'address' => 'required',
+         'phone' => ['required', 'numeric', new PhoneNumber]
+
+        ]);
+
+   //     dd($data);
+
+// jadvalga malumot qoshish 2-usuli
+
+   $Companie = Companie::create($data);
+
+
+
+//  jadvalga malumot qoshishni 1-usuli
+//     $Companie = new Companie;
+//     $Companie->name = $data['name'];
+//     $Companie->address = $data['address'];
+//     $Companie->phone = $data['phone'];
+//     $Companie->save();
+
+     return redirect()->route('companies.index');
+
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function show($id)
+    public function show($companie)
     {
-        //
+      $companie = Companie::findOrFail($companie);
+
+        return view('companies.show',[
+         'companie'=> $companie
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function edit($id)
+    public function edit($companie)
     {
-        //
+        return view('companies.edit',[
+          'companie'=>$companie
+        ]);
     }
 
     /**

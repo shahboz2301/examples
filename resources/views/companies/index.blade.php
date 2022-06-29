@@ -1,35 +1,43 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Bu tashkilotlar ro'yxati</title>
-</head>
-<body>
-    <h1>Bu tashkilotlar ro'yxati</h1>
+
+  @extends('app');
+
+  @section('content')
+
+    <h1 class="text-center">Bu tashkilotlar ro'yxati</h1>
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+   <a href="{{route('companies.create')}}"> <button class="btn btn-success" type="button">Tashkilot qo'shish</button> </a>
+
+    </div>
+
     <br>
-    <table border="1">
+    <table class="table table-bordered">
        <thead>
            <tr>
-               <td>T/R</td>
-               <td>Tashkilot nomi</td>
-               <td>Tashkilot manzili</td>
-               <td>Tashkilot raqaami</td>
+               <th>T/R</th>
+               <th>Tashkilot nomi</th>
+               <th>Tashkilot manzili</th>
+               <th>Tashkilot raqaami</th>
+               <th>Amallar</th>
            </tr>
        </thead>
        <tbody>
-         @foreach($companies as $company)
+         @foreach($companies as $companie)
              <tr>
-                 <td>{{ $loop->index }}</td>
-                 <td>{{ $company->name}}</td>
-                 <td>{{ $company->address}}</td>
-                 <td>{{ $company->phone}}</td>
+                 <td>{{ (($companies->currentpage()-1)*$companies->perpage() + ($loop->index+1)) }}</td>
+                 <td>
+                  <a href="{{route('companies.show', ['company' => $companie->id])}}"> {{ $companie->name}} </a>
+                 </td>
+                 <td>{{ $companie->address}}</td>
+                 <td>{{ $companie->phone}}</td>
+                 <td>
+
+                     <a href="{{ route('companies.edit', ['company'=>$companie->id]) }}" class="btn btn-info"><i class="bi bi-pencil-square"></i>{{ $companie->name}}</a>
+                 </td>
              </tr>
          @endforeach
+
        </tbody>
       </table>
-
-</body>
-</html>
+    {{$companies->links()}}
+  @endsection
