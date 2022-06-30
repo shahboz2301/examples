@@ -3,13 +3,12 @@
 
   @section('content')
 
-    <h1 class="text-center">Bu tashkilotlar ro'yxati</h1>
+    <h1 class="text-center p-3">Bu tashkilotlar ro'yxati</h1>
 
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
    <a href="{{route('companies.create')}}"> <button class="btn btn-success" type="button">Tashkilot qo'shish</button> </a>
 
     </div>
-
     <br>
     <table class="table table-bordered">
        <thead>
@@ -23,20 +22,32 @@
        </thead>
        <tbody>
          @foreach($companies as $companie)
-             <tr>
-                 <td>{{ (($companies->currentpage()-1)*$companies->perpage() + ($loop->index+1)) }}</td>
+            <tr>
                  <td>
-                  <a href="{{route('companies.show', ['company' => $companie->id])}}"> {{ $companie->name}} </a>
+                     {{ (($companies->currentpage()-1)*$companies->perpage() + ($loop->index+1)) }}
                  </td>
-                 <td>{{ $companie->address}}</td>
-                 <td>{{ $companie->phone}}</td>
                  <td>
+                   <a
+                     href="{{route('companies.show', ['company' => $companie->id])}}"> {{ $companie->name}}
+                   </a>
+                 </td>
+                 <td>
+                    {{ $companie->address}}
+                 </td>
+                 <td>
+                    {{ $companie->phone}}
+                 </td>
+                 <td>
+                     <a href="{{ route('companies.edit', ['company'=>$companie->id])}}" class="btn btn-info"><i class="bi bi-pencil-square"></i>
+                     </a>
 
-                     <a href="{{ route('companies.edit', ['company'=>$companie->id]) }}" class="btn btn-info"><i class="bi bi-pencil-square"></i>{{ $companie->name}}</a>
+{{--                     <form action="{{route('companies.destroy', ['companie'=>$companie->id])}}" method="post">@method('DELETE')</form>--}}
+
+                     <a href="{{ route('companies.edit', ['company'=>$companie->id])}}" class="btn btn-danger"><i class="bi bi-trash"></i>
+                     </a>
                  </td>
              </tr>
          @endforeach
-
        </tbody>
       </table>
     {{$companies->links()}}

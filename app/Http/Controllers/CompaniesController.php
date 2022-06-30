@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SaveCompanieRequest;
 use App\Models\Companie;
 use App\Rules\PhoneNumber;
 use Illuminate\Http\Request;
@@ -32,7 +33,11 @@ class CompaniesController extends Controller
      */
     public function create()
     {
-        return view('compan\ies.create');
+
+         $companie=new Companie();
+        return view('companies.create', [
+           'companie'=>$companie
+        ]);
     }
 
     /**
@@ -41,20 +46,17 @@ class CompaniesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(SaveCompanieRequest  $request)
     {
-        $data = $request->validate([
-         'name'=> 'bail|required|min:5',
-         'address' => 'required',
-         'phone' => ['required', 'numeric', new PhoneNumber]
+        Companie::create($request->validated());
 
-        ]);
+        return redirect()->route('companies.index');
 
    //     dd($data);
 
 // jadvalga malumot qoshish 2-usuli
 
-   $Companie = Companie::create($data);
+//   $Companie = Companie::create($data);
 
 
 
@@ -65,7 +67,7 @@ class CompaniesController extends Controller
 //     $Companie->phone = $data['phone'];
 //     $Companie->save();
 
-     return redirect()->route('companies.index');
+
 
     }
 
@@ -75,7 +77,7 @@ class CompaniesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function show($companie)
+    public function show( $companie)
     {
       $companie = Companie::findOrFail($companie);
 
@@ -90,10 +92,10 @@ class CompaniesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function edit($companie)
+    public function edit(Companie $companie)
     {
         return view('companies.edit',[
-          'companie'=>$companie
+          'companie'=> $companie
         ]);
     }
 
@@ -104,9 +106,14 @@ class CompaniesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(SaveCompanieRequest $request, Companie $companie)
     {
-        //
+
+        $companie->update($request->validated());
+
+        return redirect()->route('companies.index');
+
+
     }
 
     /**
@@ -115,8 +122,11 @@ class CompaniesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy( Companie $companie)
     {
-        //
+        $companie->delete();
+        return redirect()->route('companies.index');
     }
+
+
 }
